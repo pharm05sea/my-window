@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="eco">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,6 +9,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script>/* 기본 테마는 eco. 다른 테마 미리보기: 주소 끝에 ?theme=classic(이전 잉크 & 레드) · teal · navy · sage · dark */
+try { var t = new URLSearchParams(location.search).get("theme");
+  if (t === "classic") document.documentElement.removeAttribute("data-theme");
+  else if (/^(teal|navy|sage|dark|eco)$/.test(t || "")) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
 <body>
 <main id="app" class="sheet">

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>색 테마 비교</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Nanum Gothic", sans-serif; background: #e9e7e2; color: #161514; }
+  header { position: sticky; top: 0; z-index: 2; background: #161514; color: #f2efe8; padding: 12px 16px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  header b { font-family: "Nanum Gothic Coding", monospace; letter-spacing: .06em; margin-right: 8px; }
+  button { font: inherit; font-size: 13px; font-weight: 700; padding: 8px 12px; border: 1px solid #f2efe8;
+    background: transparent; color: #f2efe8; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+  button[aria-pressed="true"] { background: #f2efe8; color: #161514; }
+  .sw { display: inline-flex; }
+  .sw i { width: 12px; height: 12px; display: inline-block; }
+  .note { font-size: 12px; opacity: .75; margin-left: auto; }
+  iframe { display: block; width: 100%; height: calc(100vh - 58px); border: 0; background: #fff; }
+  @media (max-width: 700px) { .note { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <b>COLOR THEMES</b>
+  <button data-t="" aria-pressed="true"><span class="sw"><i style="background:#0e7a3e"></i><i style="background:#1d4ed8"></i><i style="background:#14243a"></i></span>기본 · 에코 (Stitch 톤)</button>
+  <button data-t="classic"><span class="sw"><i style="background:#161514"></i><i style="background:#c8341f"></i><i style="background:#f8f5ef"></i></span>이전 · 잉크 & 레드</button>
+  <button data-t="teal"><span class="sw"><i style="background:#0f1f1d"></i><i style="background:#0e6b63"></i><i style="background:#b8862b"></i></span>A · 딥 틸 & 샌드</button>
+  <button data-t="navy"><span class="sw"><i style="background:#0e1a2b"></i><i style="background:#c7462a"></i><i style="background:#1f3a5f"></i></span>B · 네이비 & 코랄</button>
+  <button data-t="sage"><span class="sw"><i style="background:#1b1e18"></i><i style="background:#4a6b3c"></i><i style="background:#b5562e"></i></span>C · 세이지 & 테라코타</button>
+  <button data-t="dark"><span class="sw"><i style="background:#17181a"></i><i style="background:#ff7a59"></i><i style="background:#7fd1c1"></i></span>D · 그래파이트 다크</button>
+  
+  <span class="note">앱 화면 그대로 · 테마만 바뀝니다</span>
+</header>
+<iframe id="view" src="index.html" title="앱 미리보기"></iframe>
+<script>
+  document.querySelectorAll("button[data-t]").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll("button[data-t]").forEach(x => x.setAttribute("aria-pressed", x === b));
+    document.getElementById("view").src = "index.html" + (b.dataset.t ? "?theme=" + b.dataset.t : "");
+  }));
+</script>
+</body>
+</html>
