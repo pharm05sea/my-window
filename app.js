@@ -411,11 +411,13 @@ async function runAsk(label) {
     $("#ask-stat").hidden = false;
     $("#ask-stat").textContent = `${ko(took)}ms · ${res.rows.length}행`;
     $("#ask-rows").textContent = `${ko(res.rows.length)} rows`;
+    $("#hs-rows").textContent = ko(res.rows.length); $("#hs-ms").textContent = `${ko(took)}ms`; $("#hs-state").textContent = "성공";
     $("#ask-sub").textContent = label ? `질문: ${label}` : "직접 쓴 SQL";
     $("#ask-foot").textContent = `읽기 전용 검사 통과 · ${res.rows.length > 50 ? "앞 50행만 보여줍니다" : "전체 행을 보여줍니다"}`;
   } catch (e) {
     $("#ask-out").innerHTML = `<p class="err">${esc(e.message)}</p>`;
     $("#ask-stat").hidden = true; $("#ask-rows").textContent = ""; $("#ask-foot").textContent = "실행하지 못했습니다";
+    $("#hs-rows").textContent = "—"; $("#hs-ms").textContent = "—"; $("#hs-state").textContent = "오류";
   }
   b.disabled = false;
 }

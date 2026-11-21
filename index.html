@@ -61,7 +61,7 @@ try { var t = new URLSearchParams(location.search).get("theme");
       <h2>궁금한 것을 문장으로 물어보세요</h2>
       <p>질문을 SQL로 바꿔 이 브라우저 안의 데이터로 바로 계산합니다 · 읽기 전용</p>
       <div class="hero-stats">
-        <span><b>12</b>추천 질문</span><span><b>DuckDB</b>브라우저 내 실행</span><span><b>SELECT</b>읽기만 허용</span>
+        <span><b>12</b>추천 질문</span><span><b id="hs-rows">—</b>결과 행 수</span><span><b id="hs-ms">—</b>실행 시간</span><span><b id="hs-state">대기</b>상태 · 읽기 전용</span>
       </div>
     </div>
     <div class="box nl-box">
