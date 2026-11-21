@@ -510,3 +510,15 @@ html[data-theme="eco"] .sqlbox .raw-out .res th.tone-b.grp { background: #e8edf5
 .nl-box .box-foot #btn-nl { margin-left: auto; }
 @media (max-width: 1000px) { .suggest .chips2 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .suggest .chips2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* NATURAL LANGUAGE TO SQL 박스: 글자 12px · 선명한 색 */
+.nl-box, .nl-box * { font-size: 12px; }
+.nl-box .box-title { color: #0b3d20; font-weight: 800; }
+.nl-box .box-title .ico { font-size: 12px; background: #0f6b3e; color: #fff; }
+.nl-box .box-meta { color: #2b3a31; font-weight: 600; }
+.nl-box textarea { color: #0a0f0c; font-weight: 600; line-height: 1.6; border: 1.5px solid #0f6b3e; background: #fff; }
+.nl-box textarea::placeholder { color: #55645b; opacity: 1; }
+.nl-box .suggest .chip-btn { color: #0b3d20; font-weight: 700; background: #e7f6ec; border: 1.5px solid #5fb582; }
+.nl-box .suggest .chip-btn:hover { background: #0f6b3e; color: #fff; border-color: #0f6b3e; }
+.nl-box #btn-nl { font-weight: 800; background: #0f6b3e; color: #fff; }
+.nl-box .note { color: #0a0f0c; font-weight: 600; }
