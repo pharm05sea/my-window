@@ -511,15 +511,37 @@ html[data-theme="eco"] .sqlbox .raw-out .res th.tone-b.grp { background: #e8edf5
 @media (max-width: 1000px) { .suggest .chips2 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .suggest .chips2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-/* NATURAL LANGUAGE TO SQL 박스: 글자 16px · 네이비 */
-.nl-box, .nl-box * { font-size: 16px; }
-.nl-box .box-title { color: #1e3a6e; font-weight: 800; }
-.nl-box .box-title .ico { background: #1e3a6e; color: #fff; }
-.nl-box .box-meta { color: #3a4658; }
-.nl-box textarea { color: #0f1b2d; line-height: 1.6; background: #eef3fa; border: 1.5px solid #1e3a6e; }
-.nl-box textarea::placeholder { color: #5b6779; opacity: 1; }
-.nl-box .suggest .chip-btn { color: #1e3a6e; font-weight: 700; background: #fff; border: 1.5px solid #1e3a6e; }
-.nl-box .suggest .chip-btn:hover { background: #1e3a6e; color: #fff; }
-.nl-box .suggest .chips2 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-@media (max-width: 700px) { .nl-box .suggest .chips2 { grid-template-columns: repeat(1, minmax(0, 1fr)); } }
-.nl-box #btn-nl { font-weight: 800; background: #1e3a6e; color: #fff; }
+/* 직접 묻기 · 표 보기 · 내 파일: 글자 16px · 네이비 */
+#tab-ask, #tab-ask *, #tab-tables, #tab-tables *, #tab-mine, #tab-mine * { font-size: 16px; }
+#tab-ask .box-title, #tab-tables .box-title, #tab-mine .box-title { color: #1e3a6e; font-weight: 800; }
+#tab-ask .ico, #tab-tables .ico, #tab-mine .ico { background: #1e3a6e; color: #fff; }
+#tab-ask .box-meta, #tab-tables .box-meta, #tab-mine .small { color: #3a4658; }
+#tab-ask .res-title, #tab-tables .t-name { color: #1e3a6e; font-weight: 800; }
+#tab-ask textarea, #tab-mine textarea { color: #0f1b2d; line-height: 1.6; background: #eef3fa; border: 1.5px solid #1e3a6e; }
+#tab-ask textarea::placeholder { color: #5b6779; opacity: 1; }
+#tab-ask .chip-btn { color: #1e3a6e; font-weight: 700; background: #fff; border: 1.5px solid #1e3a6e; }
+#tab-ask .chip-btn:hover { background: #1e3a6e; color: #fff; }
+#tab-ask .suggest .chips2 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 700px) { #tab-ask .suggest .chips2 { grid-template-columns: repeat(1, minmax(0, 1fr)); } }
+#tab-ask #btn-nl, #tab-ask #btn-run { font-weight: 800; background: #1e3a6e; color: #fff; }
+#tab-ask .copy, #tab-tables .copy, #tab-mine .ghost { color: #1e3a6e; border-color: #1e3a6e; font-weight: 700; }
+#tab-ask .note, #tab-tables .note, #tab-mine .note { color: #0f1b2d; }
+#tab-mine .drop { border: 2px dashed #1e3a6e; color: #1e3a6e; font-weight: 700; background: #eef3fa; }
+
+/* 핵심 지표: 네이비 히어로 */
+.dash-hero { position: relative; overflow: hidden; margin-bottom: 14px; padding: 30px 32px; border-radius: 20px; color: #fff;
+  background: radial-gradient(120% 140% at 100% 0%, #2a4f8c 0%, #1e3a6e 55%, #162d57 100%); }
+.dash-hero::after { content: ""; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,.07); }
+.dash-hero .kk { position: relative; display: inline-block; background: rgba(255,255,255,.14); color: #c9d8f2; border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 700; }
+.dash-hero .big { position: relative; font-size: 56px; font-weight: 800; letter-spacing: -.03em; line-height: 1.05; margin: 10px 0 2px; }
+.dash-hero .big small { font-size: 24px; margin-left: 6px; font-weight: 700; }
+.dash-hero p { position: relative; margin: 0; color: #dce6f7; font-size: 14px; }
+#tab-dash .kpi-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+#tab-dash .kpi { border-radius: 16px; border-top: 4px solid #1e3a6e; }
+#tab-dash .kpi .k-label { font-size: 13px; font-weight: 700; color: #3a4658; }
+#tab-dash .kpi .k-value { font-size: 30px; color: #1e3a6e; }
+#tab-dash .kpi .k-sub, #tab-dash .kpi .k-delta { font-size: 12.5px; color: #3a4658; }
+#tab-dash .box { border-radius: 16px; }
+#tab-dash .res-title { color: #1e3a6e; font-size: 15px; }
+#tab-dash .cols .col i, #tab-dash .hbar .t i { background: #2f5bb7; }
+@media (max-width: 800px) { #tab-dash .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .dash-hero { padding: 22px 20px; } .dash-hero .big { font-size: 44px; } }

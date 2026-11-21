@@ -361,9 +361,10 @@ async function renderDash() {
     const maxM = Math.max(...m.rows.map(r => r.신고_품목)) || 1;
     const labIdx = new Set([m.rows.findIndex(r => r.신고_품목 === maxM), m.rows.length - 1]);
     el.innerHTML = `
+      <div class="dash-hero"><span class="kk">✦ 전체 고유 신고 품목</span>
+        <div class="big">${ko(k.전체_품목)}<small>건</small></div>
+        <p>${esc(k.시작)} ~ ${esc(k.끝)} · 허가일자 기준 · 고유 filing_id</p></div>
       <div class="kpi-grid">
-        <div class="kpi hero"><div class="k-label">전체 고유 신고 품목</div><div class="k-value">${ko(k.전체_품목)}</div>
-          <div class="k-sub">${esc(k.시작)} ~ ${esc(k.끝)} · 허가일자 기준 · 고유 filing_id</div></div>
         <div class="kpi"><div class="k-label">8~10월 신고 품목</div><div class="k-value">${ko(k.품목_8_10월)}</div>
           <div class="k-delta">5~7월 ${ko(k.품목_5_7월)}건 대비 ${minus(d)}${dp == null ? "" : ` (${dp > 0 ? "+" : dp < 0 ? "−" : ""}${Math.abs(dp).toFixed(1)}%)`}</div></div>
         <div class="kpi"><div class="k-label">제조업소 (고유 인허가번호)</div><div class="k-value">${ko(k.전체_업소)}</div>
