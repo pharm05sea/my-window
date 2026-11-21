@@ -1,0 +1,83 @@
+{
+ "title": "건강기능식품 품목신고 분석 — 기능성·제형별 신규 제품 검토 후보",
+ "owner": "가상 데이터가 아니다 — 실제 식약처 공공데이터(식품안전나라 I0030 품목제조 신고사항 · 공공데이터포털 건강기능식품정보 상세조회, 2026-11-20~21 API 추출)를 쓴다. 기능성·제형 분류와 질문·SQL·판단 기준은 사람이 정한 것이다.",
+ "files": [
+  {
+   "file": "품목신고_2026.xlsx",
+   "match": "품목신고",
+   "table": "filings"
+  },
+  {
+   "file": "기능성분류_2026.xlsx",
+   "match": "기능성분류",
+   "table": "filing_functions"
+  },
+  {
+   "file": "제품상세_2026.xlsx",
+   "match": "제품상세",
+   "table": "product_details"
+  }
+ ],
+ "questions": [
+  {
+   "id": "npd_candidates",
+   "q": "2026년 5~7월과 8~10월을 비교했을 때, 품목신고 수가 증가하고 여러 제조업소에서 나타난 기능성 × 제형 조합은 무엇인가? 신규 제품 개발 검토 후보 3개를 근거와 함께 보여줘.",
+   "judge": "신고 품목 수가 증가하고, 증가가 특정 제조업소 한 곳에 집중되지 않은 기능성 × 제형 조합을 신규 제품 개발 검토 후보로 선정한다. 신고 건수만으로 소비자 수요나 매출을 단정하지 않고, 후보는 시장·경쟁제품·원가·기술 검토 대상으로 제안한다.",
+   "kicker": "5~7월 VS 8~10월 (각 92일)",
+   "cards": {
+    "label": "신규 제품 개발 검토 후보",
+    "basis": "기준: 신고 품목 증가 + 제조업소 분산",
+    "title": [
+     "기능성",
+     "제형"
+    ],
+    "delta_pct": "품목_증감률",
+    "delta": "품목_증감",
+    "before": "품목_5_7월",
+    "after": "품목_8_10월",
+    "mfr_before": "업소_5_7월",
+    "mfr_after": "업소_8_10월",
+    "share": "일위업소_비중_8_10월",
+    "before_label": "5~7월",
+    "after_label": "8~10월"
+   },
+   "limits": [
+    {
+     "label": "기준일·기간",
+     "text": "filing_date = 허가일자(I0030 PRMS_DT)이며 변경일이 아니다. 5~7월(2026-05-01~07-31) · 8~10월(08-01~10-31), 각 92일. 실제 데이터 범위는 2026-05-04~10-30, 날짜 누락 0건."
+    },
+    {
+     "label": "범위·해석",
+     "text": "이 6개월만 추출한 자료라 전년 같은 기간과 비교할 수 없고 계절 효과와 구분하지 못한다. 8~10월이 적은 것이 추출 시점(2026-11-20)의 반영 지연인지는 확인하지 않았다. 품목신고 건수이며 출시·판매가 아니고, 국내 시장 전체를 대표하는지 확인하지 않았다."
+    },
+    {
+     "label": "분류 기준",
+     "text": "기능성(function_group)은 주된 기능성 문구를 규칙으로 분류한 값이고, «영양소 기능»은 «~에 필요» 문구를 한데 묶은 넓은 분류다. 제형(dosage_form)은 API 원문 값이 아니라 상세조회 성상(SUNGSANG) 문구에서 분류한 값이다."
+    },
+    {
+     "label": "집계·후보 조건",
+     "text": "품목은 고유 filing_id(기능성이 여러 개면 기능성마다 한 번씩), 업소는 고유 manufacturer_id로 센다. 미분류·제형 미확인은 전체 집계에 남기고 후보에서만 뺀다. 조건: 품목 증가 · 8~10월 업소 5곳 이상 · 업소 감소 없음 · 8~10월 1위 업소 비중 30% 미만, 증감 건수 큰 순 3개."
+    }
+   ],
+   "sql": "WITH 신고 AS (\n  -- 1) filings: 신고 1건 = 1행. 허가일자(filing_date)로 기간을 먼저 붙인다\n  SELECT filing_id, manufacturer_id,\n         CASE WHEN filing_date BETWEEN DATE '2026-05-01' AND DATE '2026-07-31' THEN 1\n              WHEN filing_date BETWEEN DATE '2026-08-01' AND DATE '2026-10-31' THEN 2 END AS 기간\n  FROM filings\n  WHERE filing_date BETWEEN DATE '2026-05-01' AND DATE '2026-10-31'\n),\n기능성 AS (\n  -- 2) filing_functions: 신고 1건 × 기능성 1개 (키 filing_id + function_group)\n  SELECT DISTINCT filing_id, function_group FROM filing_functions\n),\n연결 AS (\n  -- 3) filings 기준 LEFT JOIN. product_details 는 신고당 0~1행이라 행이 늘지 않고,\n  --    기능성이 여러 개인 신고만 기능성 수만큼 늘어난다 → 아래에서 COUNT(DISTINCT filing_id)\n  SELECT s.filing_id, s.manufacturer_id, s.기간,\n         COALESCE(k.function_group, '미분류') AS 기능성,\n         COALESCE(p.dosage_form, '제형 미확인') AS 제형\n  FROM 신고 s\n  LEFT JOIN product_details p USING (filing_id)\n  LEFT JOIN 기능성 k USING (filing_id)\n),\n조합 AS (\n  SELECT 기능성, 제형,\n         COUNT(DISTINCT filing_id) FILTER (WHERE 기간 = 1) AS 품목_5_7월,\n         COUNT(DISTINCT filing_id) FILTER (WHERE 기간 = 2) AS 품목_8_10월,\n         COUNT(DISTINCT manufacturer_id) FILTER (WHERE 기간 = 1) AS 업소_5_7월,\n         COUNT(DISTINCT manufacturer_id) FILTER (WHERE 기간 = 2) AS 업소_8_10월\n  FROM 연결\n  GROUP BY 1, 2\n),\n업소별 AS (\n  SELECT 기능성, 제형, manufacturer_id, COUNT(DISTINCT filing_id) AS 품목\n  FROM 연결\n  WHERE 기간 = 2 AND manufacturer_id IS NOT NULL\n  GROUP BY 1, 2, 3\n),\n일위 AS (\n  SELECT 기능성, 제형, MAX(품목) AS 일위_품목 FROM 업소별 GROUP BY 1, 2\n)\nSELECT ROW_NUMBER() OVER (ORDER BY 품목_8_10월 - 품목_5_7월 DESC, 품목_8_10월 DESC, c.기능성, c.제형) AS 순위,\n       c.기능성, c.제형,\n       품목_5_7월, 품목_8_10월,\n       품목_8_10월 - 품목_5_7월 AS 품목_증감,\n       ROUND(100.0 * (품목_8_10월 - 품목_5_7월) / NULLIF(품목_5_7월, 0), 1)::DOUBLE AS 품목_증감률,\n       업소_5_7월, 업소_8_10월,\n       업소_8_10월 - 업소_5_7월 AS 업소_증감,\n       ROUND(100.0 * 일위_품목 / NULLIF(품목_8_10월, 0), 1)::DOUBLE AS 일위업소_비중_8_10월\nFROM 조합 c\nLEFT JOIN 일위 t USING (기능성, 제형)\nWHERE c.기능성 <> '미분류' AND c.제형 <> '제형 미확인'      -- 분류 안 된 신고는 후보에서만 뺀다\n  AND 품목_8_10월 > 품목_5_7월                              -- 신고 품목 증가\n  AND 업소_8_10월 >= 5                                      -- 여러 제조업소에서 나타남\n  AND 업소_8_10월 >= 업소_5_7월                             -- 제조업소 수가 줄지 않음\n  AND 100.0 * 일위_품목 / NULLIF(품목_8_10월, 0) < 30       -- 업소 한 곳 집중 아님\nORDER BY 순위\nLIMIT 3",
+   "check": [
+    {
+     "where": {
+      "기능성": "영양소 기능",
+      "제형": "액상"
+     },
+     "col": "품목_증감",
+     "want": 54
+    },
+    {
+     "where": {
+      "기능성": "혈행",
+      "제형": "분말"
+     },
+     "col": "업소_8_10월",
+     "want": 13
+    }
+   ]
+  }
+ ]
+}

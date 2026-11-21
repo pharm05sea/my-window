@@ -1,0 +1,26 @@
+# 배포 · 실행 부산물
+.vercel/
+__pycache__/
+*.pyc
+.env
+.env.*
+
+# 실제 추출 파일 — 공개 저장소에 올리지 않는다 (앱 데이터는 data/*.parquet)
+*.xlsx
+*.xls
+*.csv
+~$*
+
+# 개인 설정 · OS 부산물
+.claude/settings.local.json
+.vscode/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+.vercel
+
+# 정답 · 받은 원본 엑셀 — 커밋하지 않는다
+tools/answer/
+내려받기/
+원본/
