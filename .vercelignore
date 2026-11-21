@@ -3,3 +3,9 @@ tools/
 .mcp.json
 원본/
 인사이트_토.md
+내려받기/
+*.xlsx
+*.xls
+*.csv
+.env
+.env.*
