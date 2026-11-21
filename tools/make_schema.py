@@ -21,11 +21,15 @@ GRAIN = {
     "filings": "품목신고 1건",
     "filing_functions": "품목신고 1건에 분류된 기능성 1개 (품목신고 1건 × 기능성 1개)",
     "product_details": "품목신고 1건의 제품 상세정보 1건",
+    "filing_materials": "품목신고 1건의 주원료 1개 (품목신고 1건 × 주원료 1개)",
+    "material_links": "주원료 이름 1개 × 한국식품연구원 자료의 대상 이름 1개 (연결 1건)",
 }
 KEY = {  # 한 줄을 가리키는 열 — 실행 때 고유한지 확인
     "filings": ["filing_id"],
     "filing_functions": ["filing_id", "function_group"],
     "product_details": ["filing_id"],
+    "filing_materials": ["filing_id", "material"],
+    "material_links": ["material", "tier", "source", "target_name"],
 }
 DESC = {
     "filings": (
@@ -43,6 +47,18 @@ DESC = {
         "공공데이터포털 식품의약품안전처 건강기능식품정보 상세조회(HtfsInfoService03/getHtfsItem01) 결과 중 "
         "응답 품목번호(STTEMNT_NO)가 filing_id 와 같은 것. filing_id 당 최대 1행(0~1행). "
         "상세가 없는 신고는 이 표에 행이 없다 — filings 기준 LEFT JOIN 으로 «제형 미확인»을 남긴다."
+    ),
+    "filing_materials": (
+        "I0030 주원료(RAWMTRL_NM)를 괄호 밖 쉼표로 나눠 신고마다 한 줄씩 펼친 표 (tools/build_materials.py). "
+        "신고 1건에 주원료가 여러 개다 — filings 와 바로 조인하면 원료 수만큼 신고가 늘어나므로 "
+        "품목 수는 COUNT(DISTINCT filing_id) 로 센다. 원료 이름은 원문 그대로이며 표준화하지 않았다."
+    ),
+    "material_links": (
+        "filing_materials 의 주원료 이름을 한국식품연구원 자료(한의문헌 · 학술 · 병증처방 1~3, 2019년 공개)의 이름과 대조한 결과 "
+        "(tools/match_materials.py). 신고번호가 아니라 «원료 이름» 단위 연결이다 — filing_materials 와 material 로 조인한다. "
+        "tier A = 정규화 후 같은 이름, B = 사람이 확인한 동의어(tools/material_synonyms.tsv, relation same), "
+        "R = 관련 소재(relation related, 예: 홍삼 → 인삼)로 «연결»로 세지 않는다. 연결 안 된 원료는 이 표에 행이 없다. "
+        "한 원료가 여러 대상 이름에 연결되므로 조인하면 행이 늘어난다. 문헌 기록은 효능 근거가 아니다."
     ),
 }
 COL_DESC = {
@@ -66,6 +82,19 @@ COL_DESC = {
             "성상(SUNGSANG) 문구에서 분류한 값으로 본다. 비어 있으면 판정 못 한 것"
         ),
         "intake_method": "섭취방법 SRV_USE 원문",
+    },
+    "filing_materials": {
+        "filing_id": "filings.filing_id 와 연결",
+        "material": "주원료 이름 원문 (I0030 RAWMTRL_NM 의 한 조각, 예: 은행잎 추출물 · 비타민 C)",
+    },
+    "material_links": {
+        "material": "filing_materials.material 과 같은 원문 이름",
+        "std_name": "표준 소재명 (A 는 원문 그대로, B · R 은 동의어 표의 표준소재명)",
+        "tier": "A 정규화 일치 · B 확인된 동의어 · R 관련 소재(연결로 세지 않음)",
+        "relation": "same 같은 소재 · related 관련 소재",
+        "source": "대상 자료 — 한의문헌 · 학술 · 병증처방·대표식품 · 병증처방·처방 · 병증처방·약재",
+        "target_name": "대상 자료에 적힌 이름 원문",
+        "target_rows": "대상 자료에서 그 이름이 나온 행 수 (문헌 · 처방 기록 수, 효능 근거 아님)",
     },
 }
 SKIP_VALUES = {"product_name", "manufacturer_name", "intake_method"}

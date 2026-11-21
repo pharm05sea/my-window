@@ -22,6 +22,27 @@
     }
    ]
   },
+  "filing_materials": {
+   "grain": "품목신고 1건의 주원료 1개 (품목신고 1건 × 주원료 1개)",
+   "key": [
+    "filing_id",
+    "material"
+   ],
+   "desc": "I0030 주원료(RAWMTRL_NM)를 괄호 밖 쉼표로 나눠 신고마다 한 줄씩 펼친 표 (tools/build_materials.py). 신고 1건에 주원료가 여러 개다 — filings 와 바로 조인하면 원료 수만큼 신고가 늘어나므로 품목 수는 COUNT(DISTINCT filing_id) 로 센다. 원료 이름은 원문 그대로이며 표준화하지 않았다.",
+   "rows": 12680,
+   "columns": [
+    {
+     "name": "filing_id",
+     "type": "VARCHAR",
+     "desc": "filings.filing_id 와 연결"
+    },
+    {
+     "name": "material",
+     "type": "VARCHAR",
+     "desc": "주원료 이름 원문 (I0030 RAWMTRL_NM 의 한 조각, 예: 은행잎 추출물 · 비타민 C)"
+    }
+   ]
+  },
   "filings": {
    "grain": "품목신고 1건",
    "key": [
@@ -54,6 +75,107 @@
      "name": "manufacturer_name",
      "type": "VARCHAR",
      "desc": "업소명 BSSH_NM"
+    }
+   ]
+  },
+  "material_links": {
+   "grain": "주원료 이름 1개 × 한국식품연구원 자료의 대상 이름 1개 (연결 1건)",
+   "key": [
+    "material",
+    "tier",
+    "source",
+    "target_name"
+   ],
+   "desc": "filing_materials 의 주원료 이름을 한국식품연구원 자료(한의문헌 · 학술 · 병증처방 1~3, 2019년 공개)의 이름과 대조한 결과 (tools/match_materials.py). 신고번호가 아니라 «원료 이름» 단위 연결이다 — filing_materials 와 material 로 조인한다. tier A = 정규화 후 같은 이름, B = 사람이 확인한 동의어(tools/material_synonyms.tsv, relation same), R = 관련 소재(relation related, 예: 홍삼 → 인삼)로 «연결»로 세지 않는다. 연결 안 된 원료는 이 표에 행이 없다. 한 원료가 여러 대상 이름에 연결되므로 조인하면 행이 늘어난다. 문헌 기록은 효능 근거가 아니다.",
+   "rows": 42,
+   "columns": [
+    {
+     "name": "material",
+     "type": "VARCHAR",
+     "desc": "filing_materials.material 과 같은 원문 이름",
+     "values": [
+      "녹차추출물",
+      "마늘",
+      "삽주추출분말(제2026-8호)",
+      "오미자추출물(제2018-9호)",
+      "인삼",
+      "차전자피식이섬유",
+      "홍삼",
+      "홍삼(원료성)",
+      "홍삼(제2024-20호)",
+      "홍삼오일(KGC11o)(제2022-33호)",
+      "황해쑥추출분말(제2024-21호)",
+      "회화나무열매추출물"
+     ]
+    },
+    {
+     "name": "std_name",
+     "type": "VARCHAR",
+     "desc": "표준 소재명 (A 는 원문 그대로, B · R 은 동의어 표의 표준소재명)",
+     "values": [
+      "녹차추출물",
+      "마늘",
+      "삽주추출분말(제2026-8호)",
+      "오미자추출물(제2018-9호)",
+      "인삼",
+      "차전자피식이섬유",
+      "홍삼",
+      "홍삼 오일",
+      "황해쑥추출분말(제2024-21호)",
+      "회화나무열매추출물"
+     ]
+    },
+    {
+     "name": "tier",
+     "type": "VARCHAR",
+     "desc": "A 정규화 일치 · B 확인된 동의어 · R 관련 소재(연결로 세지 않음)",
+     "values": [
+      "A",
+      "B",
+      "R"
+     ]
+    },
+    {
+     "name": "relation",
+     "type": "VARCHAR",
+     "desc": "same 같은 소재 · related 관련 소재",
+     "values": [
+      "related",
+      "same"
+     ]
+    },
+    {
+     "name": "source",
+     "type": "VARCHAR",
+     "desc": "대상 자료 — 한의문헌 · 학술 · 병증처방·대표식품 · 병증처방·처방 · 병증처방·약재",
+     "values": [
+      "병증처방·대표식품",
+      "병증처방·약재",
+      "병증처방·처방",
+      "학술",
+      "한의문헌"
+     ]
+    },
+    {
+     "name": "target_name",
+     "type": "VARCHAR",
+     "desc": "대상 자료에 적힌 이름 원문",
+     "values": [
+      "마늘",
+      "삽주",
+      "오미자",
+      "인삼",
+      "인삼가루",
+      "작설차",
+      "차전자",
+      "황해쑥",
+      "회화나무열매"
+     ]
+    },
+    {
+     "name": "target_rows",
+     "type": "BIGINT",
+     "desc": "대상 자료에서 그 이름이 나온 행 수 (문헌 · 처방 기록 수, 효능 근거 아님)"
     }
    ]
   },
