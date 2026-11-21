@@ -33,7 +33,13 @@ if hasattr(sys.stdout, "reconfigure"):
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(HERE, "data").replace("\\", "/")
 SUF = re.compile(r"(추출물|추출분말|추출액|추출농축액|농축액|농축분말|농축물|건조분말|건조물|분말|엑스|엑기스|가루|발효물|추출)$")
-CANDIDATES = [("영양소 기능", "액상"), ("혈행", "분말"), ("피로 개선", "분말")]   # npd_candidates 결과
+def candidates(con):
+    """questions.json 의 npd_candidates SQL 을 그대로 돌려 후보 (기능성, 제형) 을 얻는다 — 규칙이 바뀌어도 앱과 같은 후보."""
+    q = next(x for x in json.load(io.open(os.path.join(HERE, "questions.json"), encoding="utf-8"))["questions"]
+             if x["id"] == "npd_candidates")
+    for t in ("filings", "filing_functions", "product_details"):
+        con.execute(f"CREATE OR REPLACE VIEW {t} AS SELECT * FROM read_parquet('{DATA}/{t}.parquet')")
+    return [(r[1], r[2]) for r in con.execute(q["sql"]).fetchall()]
 
 
 def norm(s):
@@ -88,10 +94,12 @@ def main():
                    schema=pa.schema([(k, pa.int64() if k == "target_rows" else pa.string()) for k in cols]))
     pq.write_table(tbl, os.path.join(DATA, "material_links.parquet"))
 
+    cands = candidates(con)
+    print("후보 (npd_candidates):", " · ".join(f"{a} × {b}" for a, b in cands))
     cand = {r[0] for r in con.execute(f"""
         SELECT DISTINCT ff.filing_id FROM read_parquet('{DATA}/filing_functions.parquet') ff
         JOIN read_parquet('{DATA}/product_details.parquet') p USING (filing_id)
-        WHERE (ff.function_group, p.dosage_form) IN ({", ".join(f"('{a}', '{b}')" for a, b in CANDIDATES)})""").fetchall()}
+        WHERE (ff.function_group, p.dosage_form) IN ({", ".join(f"('{a}', '{b}')" for a, b in cands)})""").fetchall()}
     linked = lambda m: tier_of.get(m) in ("A", "B")
 
     def report(label, fids):

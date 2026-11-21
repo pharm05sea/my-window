@@ -24,9 +24,10 @@ DATA = os.path.join(HERE, "data")
 
 FILES = {  # 엑셀 → (표 이름, 날짜 열)
     "품목신고_2026.xlsx": ("filings", ["filing_date"]),
-    "기능성분류_2026.xlsx": ("filing_functions", []),
     "제품상세_2026.xlsx": ("product_details", []),
 }
+# 기능성분류_2026.xlsx(규칙 v1, 잠가 둔 정답의 기준)는 여기서 변환하지 않는다.
+# data/filing_functions.parquet 은 tools/classify_functions.py 가 규칙 v2 로 만든다.
 
 
 def main():
