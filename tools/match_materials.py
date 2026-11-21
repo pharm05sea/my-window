@@ -12,6 +12,7 @@
   A  정규화 후 이름이 같다 — 괄호 안 · 공백 · 기호를 지우고, 끝의 형태 낱말(추출물 · 분말 · 농축액 …)을 뗀 뒤 비교
   B  동의어 표의 관계 same 으로 같다 (사람이 확인한 것만)
   R  동의어 표의 관계 related — 관련 소재로만 기록하고 «연결»로 세지 않는다
+  동의어 표의 관계 exclude 는 이름만 같은 잘못된 연결을 A 에서 뺀다 (예: 영양소 구리 ↔ 自然銅의 현대어 «구리»)
 부분 일치 · 비슷한 글자는 자동으로 연결하지 않는다 (후보로만 화면에 보여준다).
 """
 import collections
@@ -62,15 +63,16 @@ def main():
 
     links = []   # (material, std_name, tier, relation, source, target_name, target_rows)
     tier_of = {}
+    exclude = {(core(s["원료이름"]), core(s["대상이름"])) for s in syn if s["관계"] == "exclude"}
     for m in mats:
         c = core(m)
-        if c in tgt:
+        if c in tgt and (c, c) not in exclude:
             tier_of[m] = "A"
             for src, d in tgt[c].items():
                 for name, n in d.items():
                     links.append((m, m, "A", "same", src, name, n))
         for s in syn:
-            if core(s["원료이름"]) != c:
+            if s["관계"] == "exclude" or core(s["원료이름"]) != c:
                 continue
             tc = core(s["대상이름"])
             tier = "B" if s["관계"] == "same" else "R"
