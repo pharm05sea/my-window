@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>건강기능식품 품목신고 분석</title>
+<title>식약처 품목신고 분석</title>
 <meta name="description" content="식약처 공공데이터(건강기능식품 품목신고)에 SQL로 묻는 리서치 브리프. 모든 답 옆에 SQL이 있습니다. 데이터베이스는 이 브라우저 안에 있습니다.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script>/* 기본 테마는 eco. 다른 테마 미리보기: 주소 끝에 ?theme=classic(이전 잉크 & 레드) · teal · navy · sage · dark */
 try { var t = new URLSearchParams(location.search).get("theme");
@@ -20,67 +20,129 @@ try { var t = new URLSearchParams(location.search).get("theme");
   <header class="mast">
     <div class="mast-left">
       <span class="wk">WEEK 04 · SAT</span>
-      <span class="mono dim">식약처 공공데이터 SQL 리서치 브리프</span>
+      <span class="dim">식약처 공공데이터 SQL 리서치 브리프</span>
     </div>
-    <div class="mono dim" id="range">데이터 범위 확인 중…</div>
+    <div class="mast-right">
+      <span class="chip" id="range">데이터 범위 확인 중…</span>
+      <span class="chip status" id="engine">데이터 엔진 준비 중…</span>
+    </div>
   </header>
 
   <section class="title-row">
     <div class="title-text">
-      <h1 class="serif">건강기능식품 품목신고 분석</h1>
+      <h1>식약처 품목신고 분석</h1>
       <p class="lede">질문을 고르거나 쓰면 SQL이 돌고 표가 뜹니다. <b>모든 답 옆에 SQL이 있습니다</b> — 어떻게 셌는지 보이지
         않는 숫자는 믿지 않습니다.</p>
-      <p id="engine" class="engine mono">데이터 엔진 준비 중…</p>
     </div>
     <nav class="tabs" role="tablist">
       <button role="tab" data-tab="preset" aria-selected="true">준비한 질문</button>
+      <button role="tab" data-tab="dash" aria-selected="false">핵심 지표</button>
       <button role="tab" data-tab="ask" aria-selected="false">직접 묻기</button>
       <button role="tab" data-tab="tables" aria-selected="false">표 보기</button>
       <button role="tab" data-tab="mine" aria-selected="false">내 파일로</button>
     </nav>
   </section>
 
-  <div class="active mono" id="active-tables"></div>
-
+  <!-- 준비한 질문 -->
   <section id="tab-preset" class="panel">
+    <div class="box active-box" id="active-tables"></div>
     <div id="qlist" class="qlist"></div>
   </section>
 
-  <section id="tab-ask" class="panel pad" hidden>
-    <div class="kicker">ASK · 문장 또는 SQL로 묻기</div>
-    <label class="label" for="nl">문장으로 묻기</label>
-    <textarea id="nl" rows="2" placeholder="예) 월별 고유 신고 품목 수는?"></textarea>
-    <div class="row"><button id="btn-nl" class="ghost">SQL 만들기 (AI)</button></div>
-    <p id="nl-msg" class="note" hidden></p>
-    <label class="label" for="sql" style="margin-top:18px">SQL — 읽고, 고치고, 실행합니다</label>
-    <textarea id="sql" rows="8" class="code" spellcheck="false">SELECT strftime(filing_date, '%Y-%m') AS 월,
+  <!-- 핵심 지표 -->
+  <section id="tab-dash" class="panel" hidden>
+    <div id="dash"><p class="empty-msg">데이터 엔진이 준비되면 지표를 계산합니다…</p></div>
+  </section>
+
+  <!-- 직접 묻기 -->
+  <section id="tab-ask" class="panel" hidden>
+    <div class="box nl-box">
+      <div class="box-head">
+        <span class="box-title"><i class="ico">✦</i>NATURAL LANGUAGE TO SQL</span>
+        <span class="box-meta" id="ask-ref"></span>
+      </div>
+      <textarea id="nl" rows="3" placeholder="예) 2026년 8~10월에 신고가 가장 많은 제형 3개는?"></textarea>
+      <div class="box-foot">
+        <div class="suggest">
+          <span class="box-meta">추천 질문:</span>
+          <button class="chip-btn" data-nl="월별 고유 신고 품목 수와 제조업소 수는?">월별 품목·업소 수</button>
+          <button class="chip-btn" data-nl="2026년 8~10월에 신고가 가장 많은 제형 3개와 각 고유 신고 품목 수는?">8~10월 제형 TOP 3</button>
+          <button class="chip-btn" data-nl="2026년 8~10월에 고유 신고 품목이 가장 많은 제조업소 5곳과 각 품목 수는?">8~10월 업소 TOP 5</button>
+        </div>
+        <button id="btn-nl" class="primary">▶ SQL 생성 및 실행</button>
+      </div>
+      <p id="nl-msg" class="note" hidden></p>
+    </div>
+    <div class="ask-grid">
+      <div class="box">
+        <div class="box-head">
+          <span class="box-title"><i class="ico">&lt;/&gt;</i>생성된 SQL</span>
+          <span class="pill" id="ask-stat" hidden></span>
+        </div>
+        <textarea id="sql" rows="14" class="code" spellcheck="false">SELECT strftime(filing_date, '%Y-%m') AS 월,
        COUNT(DISTINCT filing_id) AS 신고_품목
 FROM filings
 GROUP BY 1
 ORDER BY 1</textarea>
-    <div class="row"><button id="btn-run" class="primary">▶ 실행</button></div>
-    <div id="ask-out"></div>
+        <div class="box-foot">
+          <span class="box-meta">DuckDB · 읽기(SELECT · WITH)만 실행 · 고쳐서 다시 실행할 수 있습니다</span>
+          <span class="btns"><button class="copy" id="btn-copy-sql">SQL 복사</button><button id="btn-run" class="primary sm">▶ 실행</button></span>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-head">
+          <div><div class="res-title">실행 결과 미리보기</div><div class="box-meta" id="ask-sub">아직 실행하지 않았습니다</div></div>
+          <span class="box-meta" id="ask-rows"></span>
+        </div>
+        <div id="ask-out" class="ask-out"><p class="empty-msg">질문을 쓰고 «SQL 생성 및 실행»을 누르거나, 왼쪽 SQL을 고쳐 «실행»을 누르세요.</p></div>
+        <div class="box-foot"><span class="box-meta" id="ask-foot">결과는 50행까지 보여줍니다</span></div>
+      </div>
+    </div>
   </section>
 
-  <section id="tab-tables" class="panel pad" hidden>
-    <div class="kicker">TABLES · 한 줄이 무엇인지</div>
+  <!-- 표 보기 -->
+  <section id="tab-tables" class="panel" hidden>
+    <div class="tables-grid">
+      <aside class="box tlist">
+        <div class="box-head">
+          <span class="box-title" id="t-count">ACTIVE TABLES</span>
+          <span class="box-meta" id="t-loaded"></span>
+        </div>
+        <div id="tables" class="tlist-items"></div>
+      </aside>
+      <div class="box tview">
+        <div class="box-head">
+          <div><span class="t-name" id="tv-name">표를 고르세요</span> <span class="box-meta" id="tv-file"></span>
+            <div class="box-meta" id="tv-meta"></div></div>
+        </div>
+        <p class="tv-grain" id="tv-grain"></p>
+        <div class="schema-row"><span class="box-title">SCHEMA</span><div id="tv-cols" class="col-chips"></div></div>
+        <div id="tv-rows" class="tv-rows"></div>
+        <div class="box-foot">
+          <span class="box-meta" id="tv-range"></span>
+          <span class="btns"><button class="copy" id="tv-prev" disabled>이전</button><button class="copy" id="tv-next" disabled>다음</button></span>
+        </div>
+      </div>
+    </div>
     <p class="note" id="schema-note"></p>
-    <div id="tables"></div>
   </section>
 
-  <section id="tab-mine" class="panel pad" hidden>
-    <div class="kicker">MY FILES · 내 파일로 묻기</div>
-    <p class="small">시스템에서 내려받은 엑셀이나 CSV를 넣으면, <b>준비한 질문</b>과 <b>직접 묻기</b>가 그 파일로 돕니다.
-      다음 달 파일을 넣으면 같은 질문이 다음 달 숫자를 냅니다.</p>
-    <label id="drop" class="drop" for="mine-file">
-      파일을 여기에 끌어다 놓거나 눌러서 고르기 (여러 개 한꺼번에)
-      <input id="mine-file" type="file" accept=".xlsx,.xls,.csv" multiple hidden>
-    </label>
-    <div id="mine-list"></div>
-    <div class="row"><button id="btn-mine-reset" class="ghost" hidden>원래 데이터로 돌아가기</button></div>
-    <p class="note">파일은 <b>이 브라우저를 떠나지 않습니다.</b> 읽기도 계산도 이 화면 안에서 합니다.
-      «문장으로 묻기»를 눌러도 AI에게는 질문 문장과 «표 보기»의 표 설명만 갑니다. 내 파일의 내용은 가지 않습니다.</p>
-    <p class="small dim" id="mine-rule"></p>
+  <!-- 내 파일로 -->
+  <section id="tab-mine" class="panel" hidden>
+    <div class="box">
+      <div class="box-head"><span class="box-title">MY FILES · 내 파일로 묻기</span></div>
+      <p class="small">시스템에서 내려받은 엑셀이나 CSV를 넣으면, <b>준비한 질문</b>과 <b>직접 묻기</b>가 그 파일로 돕니다.
+        다음 달 파일을 넣으면 같은 질문이 다음 달 숫자를 냅니다.</p>
+      <label id="drop" class="drop" for="mine-file">
+        파일을 여기에 끌어다 놓거나 눌러서 고르기 (여러 개 한꺼번에)
+        <input id="mine-file" type="file" accept=".xlsx,.xls,.csv" multiple hidden>
+      </label>
+      <div id="mine-list"></div>
+      <div class="row"><button id="btn-mine-reset" class="ghost" hidden>원래 데이터로 돌아가기</button></div>
+      <p class="note">파일은 <b>이 브라우저를 떠나지 않습니다.</b> 읽기도 계산도 이 화면 안에서 합니다.
+        «문장으로 묻기»를 눌러도 AI에게는 질문 문장과 «표 보기»의 표 설명만 갑니다. 내 파일의 내용은 가지 않습니다.</p>
+      <p class="small dim" id="mine-rule"></p>
+    </div>
   </section>
 
   <footer class="fineprint">
