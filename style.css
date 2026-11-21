@@ -501,3 +501,12 @@ html[data-theme="eco"] .res th.tone-a.grp { background: var(--red-soft); color: 
 .sqlbox .raw-out .res td:first-child { text-align: center; font-weight: 800; }
 .sqlbox .raw-out .res tbody tr:hover td { background: var(--code); }
 html[data-theme="eco"] .sqlbox .raw-out .res th.tone-b.grp { background: #e8edf5; color: var(--ink); }
+
+/* 추천 질문: 두 줄 격자 (6칸 × 2줄), 좁은 화면은 칸 수를 줄임 */
+.nl-box .box-foot { align-items: flex-end; }
+.suggest { flex: 1 1 100%; display: grid; gap: 8px; }
+.suggest .chips2 { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.suggest .chip-btn { text-align: center; line-height: 1.35; padding: 9px 8px; min-height: 40px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.nl-box .box-foot #btn-nl { margin-left: auto; }
+@media (max-width: 1000px) { .suggest .chips2 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .suggest .chips2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
