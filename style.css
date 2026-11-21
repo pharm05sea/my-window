@@ -511,8 +511,8 @@ html[data-theme="eco"] .sqlbox .raw-out .res th.tone-b.grp { background: #e8edf5
 @media (max-width: 1000px) { .suggest .chips2 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .suggest .chips2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-/* NATURAL LANGUAGE TO SQL 박스: 글자 20px · 네이비 */
-.nl-box, .nl-box * { font-size: 20px; }
+/* NATURAL LANGUAGE TO SQL 박스: 글자 16px · 네이비 */
+.nl-box, .nl-box * { font-size: 16px; }
 .nl-box .box-title { color: #1e3a6e; font-weight: 800; }
 .nl-box .box-title .ico { background: #1e3a6e; color: #fff; }
 .nl-box .box-meta { color: #3a4658; }
