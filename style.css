@@ -571,3 +571,13 @@ html[data-theme="eco"] .sqlbox .raw-out .res th.tone-b.grp { background: #e8edf5
 #tab-ask .ask-out table th { background: #1e3a6e; color: #fff; }
 #tab-ask .ask-out table tr:nth-child(even) td { background: #f3f6fb; }
 @media (max-width: 700px) { .ask-hero { padding: 22px 20px; } #tab-ask .ask-hero h2 { font-size: 22px; } }
+
+/* 내 파일: 직접 묻기와 같은 대시보드 톤 */
+#tab-mine .ask-hero .kk { display: inline-block; background: rgba(255,255,255,.14); color: #c9d8f2; border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 700; }
+#tab-mine .ask-hero h2 { margin: 10px 0 4px; color: #fff; font-size: 28px; font-weight: 800; letter-spacing: -.02em; }
+#tab-mine .ask-hero p { margin: 0; color: #dce6f7; font-size: 14px; }
+#tab-mine .hero-stats span { display: inline-flex; flex-direction: column; min-width: 130px; padding: 10px 16px; border-radius: 14px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); color: #c9d8f2; font-size: 12px; }
+#tab-mine .hero-stats b { color: #fff; font-size: 18px; font-weight: 800; line-height: 1.2; }
+#tab-mine .box { border-radius: 16px; border: 1px solid #dfe4ec; border-top: 4px solid #1e3a6e; box-shadow: 0 1px 2px rgba(15,27,45,.05); }
+@media (max-width: 700px) { #tab-mine .ask-hero h2 { font-size: 22px; } }
