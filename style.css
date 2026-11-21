@@ -512,7 +512,7 @@ html[data-theme="eco"] .sqlbox .raw-out .res th.tone-b.grp { background: #e8edf5
 @media (max-width: 560px) { .suggest .chips2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* 직접 묻기 · 표 보기 · 내 파일: 글자 16px · 네이비 */
-#tab-ask, #tab-ask *, #tab-tables, #tab-tables *, #tab-mine, #tab-mine * { font-size: 16px; }
+#tab-ask, #tab-ask *, #tab-mine, #tab-mine * { font-size: 16px; }
 #tab-ask .box-title, #tab-tables .box-title, #tab-mine .box-title { color: #1e3a6e; font-weight: 800; }
 #tab-ask .ico, #tab-tables .ico, #tab-mine .ico { background: #1e3a6e; color: #fff; }
 #tab-ask .box-meta, #tab-tables .box-meta, #tab-mine .small { color: #3a4658; }
@@ -545,3 +545,8 @@ html[data-theme="eco"] .sqlbox .raw-out .res th.tone-b.grp { background: #e8edf5
 #tab-dash .res-title { color: #1e3a6e; font-size: 15px; }
 #tab-dash .cols .col i, #tab-dash .hbar .t i { background: #2f5bb7; }
 @media (max-width: 800px) { #tab-dash .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .dash-hero { padding: 22px 20px; } .dash-hero .big { font-size: 44px; } }
+
+/* 표 보기: 글자 13px (표가 넓어지지 않게) */
+#tab-tables, #tab-tables * { font-size: 13px; }
+#tab-tables .t-name { font-size: 15px; }
+#tab-tables .box-meta { font-size: 12px; }
